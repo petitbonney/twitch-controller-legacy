@@ -2,7 +2,7 @@
   "name": "twitch-controller",
   "version": "1.0.0",
   "description": "Bunch of code to interact with Twitch",
-  "main": "index.js",
+  "main": "chatbot.js",
   "scripts": {
     "start": "node chatbot.js"
   },
