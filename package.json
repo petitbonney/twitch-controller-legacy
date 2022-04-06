@@ -1,0 +1,20 @@
+{
+  "name": "twitch-controller",
+  "version": "1.0.0",
+  "description": "Bunch of code to interact with Twitch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petitbonney/twitch-controller.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/petitbonney/twitch-controller/issues"
+  },
+  "homepage": "https://github.com/petitbonney/twitch-controller#readme"
+}
