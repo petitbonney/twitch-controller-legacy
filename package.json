@@ -2,9 +2,9 @@
   "name": "twitch-controller",
   "version": "1.0.0",
   "description": "Bunch of code to interact with Twitch",
-  "main": "chatbot.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node chatbot.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/petitbonney/twitch-controller#readme",
   "dependencies": {
     "dotenv": "^16.0.0",
+    "express": "^4.17.3",
     "tmi.js": "^1.8.5"
   }
 }
