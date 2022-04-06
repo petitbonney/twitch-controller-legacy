@@ -4,7 +4,7 @@
   "description": "Bunch of code to interact with Twitch",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node chatbot.js"
   },
   "repository": {
     "type": "git",
