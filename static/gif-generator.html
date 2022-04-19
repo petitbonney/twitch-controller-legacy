@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            margin: 0;
+        }
+
+        #gif-wrap {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            background-color: #000;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="gif-wrap"></div>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+        integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+        crossorigin="anonymous"></script>
+    <script>
+        const COMMAND_KEY = 'gif'
+        const DEFAULT_TAG = "cat"
+        
+        let tag = DEFAULT_TAG
+        let refresh
+        const duration = 1000 * 10
+        const gif_wrap = document.querySelector("#gif-wrap")
+
+        const getGiphyURL = () => {
+            const giphy = {
+                baseURL: "https://api.giphy.com/v1/gifs/",
+                apiKey: "0UTRbFtkMxAplrohufYco5IY74U8hOes",
+                tag: tag,
+                type: "random",
+                rating: "pg-13"
+            }
+            return encodeURI(giphy.baseURL + giphy.type + "?api_key=" + giphy.apiKey + "&tag=" + giphy.tag + "&rating=" + giphy.rating
+            )
+        }
+
+        var newGif = () => fetch(getGiphyURL())
+            .then(data => data.json())
+            .then(json => renderGif(json.data))
+
+        var renderGif = _giphy => {
+            console.log(_giphy)
+            gif_wrap.style["background-image"] = 'url("' + _giphy.images.original.url + '")'
+            refreshRate()
+        }
+
+        var refreshRate = () => {
+            clearInterval(refresh)
+            refresh = setInterval(function () {
+                newGif()
+            }, duration)
+        }
+
+        newGif()
+
+        // WebSocket Client
+        const socket = io('ws://localhost:8080')
+        socket.emit('room', 'gif')
+        socket.on('tag', text => {
+            tag = text
+            newGif()
+        })
+    </script>
+</body>
+
+</html>
