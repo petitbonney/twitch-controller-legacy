@@ -8,7 +8,9 @@ const io = require('socket.io')(http, {
 })
 
 io.on('connection', (socket) => {
+	console.log(socket.id + ' connected.')
 	socket.on('room', (room) => {
+		console.log(socket.id + ' joining room ' + room)
 		socket.join(room)
 	})
 })

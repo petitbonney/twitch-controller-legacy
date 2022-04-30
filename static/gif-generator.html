@@ -18,6 +18,7 @@
             right: 0;
             margin: auto;
             background-color: transparent;
+            /* background-color: yellowgreen; */
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -33,36 +34,40 @@
         crossorigin="anonymous"></script>
     <script>
         const COMMAND_KEY = 'gif'
-        const DEFAULT_TAG = "racoon"
         const GIF_DURATION = 7
-        
+        const BASE_URLS = ['https://api.giphy.com/v1/gifs/', 'https://api.giphy.com/v1/stickers/']
+        const API_KEY = '0UTRbFtkMxAplrohufYco5IY74U8hOes'
+        const DEFAULT_TAG = 'racoon'
+        const TYPE = 'random'
+        const RATING = 'pg'
+        // y: Appropriate for all children
+        // g: General audiences (default)
+        // pg: Parental guidance suggested
+        // pg-13: Parents strongly cautioned
+        // r: Restricted
+
         let tag = DEFAULT_TAG
         let refresh
         const gif_wrap = document.querySelector("#gif-wrap")
 
         const getGiphyURL = () => {
-            const giphy = {
-                baseURL: "https://api.giphy.com/v1/gifs/",
-                apiKey: "0UTRbFtkMxAplrohufYco5IY74U8hOes",
-                tag: tag,
-                type: "random",
-                rating: "pg-13"
-            }
-            return encodeURI(giphy.baseURL + giphy.type + "?api_key=" + giphy.apiKey + "&tag=" + giphy.tag + "&rating=" + giphy.rating
-            )
+            const url = BASE_URLS[Math.floor(Math.random() * BASE_URLS.length)]
+            const giphy = { baseURL: url, apiKey: API_KEY, tag: tag, type: TYPE, rating: RATING }
+            console.log(`Requested tag: ${tag}, url: ${url}`)
+            return encodeURI(giphy.baseURL + giphy.type + "?api_key=" + giphy.apiKey + "&tag=" + giphy.tag + "&rating=" + giphy.rating)
         }
 
-        var newGif = () => fetch(getGiphyURL())
+        const newGif = () => fetch(getGiphyURL())
             .then(data => data.json())
             .then(json => renderGif(json.data))
 
-        var renderGif = _giphy => {
+        const renderGif = _giphy => {
             console.log(_giphy)
             gif_wrap.style["background-image"] = 'url("' + _giphy.images.original.url + '")'
             refreshRate()
         }
 
-        var refreshRate = () => {
+        const refreshRate = () => {
             clearInterval(refresh)
             refresh = setInterval(function () {
                 newGif()
