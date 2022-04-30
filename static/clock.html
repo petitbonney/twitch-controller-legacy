@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="http://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
+    <link href="colors.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #clock {
+            padding-right: 5px;
+            font-family: 'DS-Digital', sans-serif;
+            color: #FFD100;
+            text-shadow: #ff3a00 1px 1px 0, #333 2px 3px 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <h1 id="clock"></h1>
+    </div>
+    <script>
+        const clock = document.querySelector('#clock')
+        // clock.set
+        const getTime = () => {
+            console.log(new Date().toTimeString().slice(0, 8))
+            clock.textContent = new Date().toTimeString().slice(0, 5)
+        }
+
+        let refresh
+        const refreshRate = () => {
+            clearInterval(refresh)
+            refresh = setInterval(function () {
+                getTime()
+                refreshRate()
+            }, 1000 * 1)
+        }
+
+        refreshRate()
+    </script>
+</body>
+
+</html>
