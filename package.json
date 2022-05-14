@@ -4,7 +4,7 @@
   "description": "Bunch of code to interact with Twitch",
   "main": "app.js",
   "scripts": {
-    "start": "node chatbot.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
