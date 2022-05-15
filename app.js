@@ -1,31 +1,24 @@
 const express = require('express')
-const http = require('http')
-const cors = require('cors')
 const chatbot = require('./src/chatbot.js')
-const socket_io = require('./src/socket-manager.js')
-
-const PORT = 8080
 
 const app = express()
+const server = require('http').createServer(app)
+const io = require('./src/socket-manager.js').start(server)
 
-app.use(cors({ origin: '*' }))
+require('dotenv').config()
 
-const server = http.createServer(app)
+app.use(express.static('public'))
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/static/index.html')
+app.get('/chatbot', (req, res) => {
+    const activate = req.query.activate
+    if (activate > 0 && !chatbot.isRunning()) {
+        chatbot.start(io)
+    } else if (activate == 0 && chatbot.isRunning()) {
+        chatbot.stop()
+    }
+    res.status(200).send({ running: chatbot.isRunning() })
 })
 
-server.listen(PORT, () => {
-    console.log(`Listening on *:${PORT}`)
+server.listen(process.env.PORT, () => {
+    console.log(`Listening on port ${process.env.PORT}`)
 })
-
-const io = socket_io.start(server)
-
-chatbot.start(io)
-
-setTimeout(() => {
-    chatbot.stop()
-    socket_io.stop()
-    server.close()
-}, 5000);

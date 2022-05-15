@@ -1,18 +1,10 @@
 // WebSocket Server
-const getSocketIO = require('socket.io')
+const socketIO = require('socket.io')
 
-let io
+let server, io
 
-/**
- * Start http and io servers.
- * @returns Socket IO object.
- */
 exports.start = (server) => {
-    io = getSocketIO(server, {
-        cors: {
-            origin: "*"
-        }
-    })
+    io = socketIO(server, { cors: { origin: '*' } })
 
     io.on('connection', (socket) => {
         console.log(socket.id + ' connected.')
@@ -25,9 +17,8 @@ exports.start = (server) => {
     return io
 }
 
-/**
- * Close http server, and disconnect all sockets.
- */
 exports.stop = () => {
-    io.disconnectSockets()
+    if (io) {
+        io.disconnectSockets()
+    }
 }

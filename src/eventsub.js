@@ -8,7 +8,7 @@ const PORT = process.env.PORT
 const STREAMER = process.env.STREAMER
 const CLIENT_ID = process.env.CLIENT_ID
 const CLIENT_SECRET = process.env.CLIENT_SECRET
-let APP_TOKEN, STREAMER_ID
+let appToken, STREAMER_ID
 
 // Notification request headers
 const TWITCH_MESSAGE_ID = 'Twitch-Eventsub-Message-Id'.toLowerCase()
@@ -24,12 +24,12 @@ const MESSAGE_TYPE_REVOCATION = 'revocation'
 // Prepend this string to the HMAC that you create from the message
 const HMAC_PREFIX = 'sha256='
 
-APP_TOKEN = await twitch.get_token(CLIENT_ID, CLIENT_SECRET, 'channel:read:subscriptions')
-STREAMER_ID = await twitch.get_streamer_id(APP_TOKEN, STREAMER)
+appToken = await twitch.get_token(CLIENT_ID, CLIENT_SECRET, 'channel:read:subscriptions')
+STREAMER_ID = await twitch.get_streamer_id(appToken, STREAMER)
 
-await twitch.unsubscribe_all(APP_TOKEN)
-await twitch.subscribe(APP_TOKEN, STREAMER_ID, 'channel.follow')
-await twitch.subscribe(APP_TOKEN, STREAMER_ID, 'channel.subscribe')
+await twitch.unsubscribe_all(appToken)
+await twitch.subscribe(appToken, STREAMER_ID, 'channel.follow')
+await twitch.subscribe(appToken, STREAMER_ID, 'channel.subscribe')
 await twitch.get_subscribed_events()
 
 app.use(express.json())

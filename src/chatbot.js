@@ -5,10 +5,6 @@ const commands = require('../commands')
 
 let client
 
-/**
- * Start chatbot.
- * @param {*} io SocketIO object.
- */
 exports.start = (io) => {
     // Get config from .env file
     dotenv.config()
@@ -43,9 +39,12 @@ exports.start = (io) => {
     })
 }
 
-/**
- * Stop chatbot.
- */
 exports.stop = () => {
-    client.disconnect()
+    if (client) {
+        client.disconnect()
+    }
+}
+
+exports.isRunning = () => {
+    return Boolean(client && client._isConnected())
 }

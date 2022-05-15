@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <style>
         body {
             position: relative;
@@ -29,12 +30,9 @@
 
 <body>
     <div id="gif-wrap"></div>
-    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
-        integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
-        crossorigin="anonymous"></script>
     <script>
         const HOST = '192.168.1.87'
-        const PORT = '8080'
+        const PORT = 8080
         const COMMAND_KEY = 'gif'
         const GIF_DURATION = 7
         const BASE_URLS = ['https://api.giphy.com/v1/gifs/', 'https://api.giphy.com/v1/stickers/']
