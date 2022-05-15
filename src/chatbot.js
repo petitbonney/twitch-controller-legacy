@@ -1,14 +1,20 @@
 // Chatbot Server
-exports.run = (io) => {
-    const tmi = require('tmi.js')
-    const dotenv = require('dotenv')
-    const commands = require('./commands')
+const tmi = require('tmi.js')
+const dotenv = require('dotenv')
+const commands = require('../commands')
 
+let client
+
+/**
+ * Start chatbot.
+ * @param {*} io SocketIO object.
+ */
+exports.start = (io) => {
     // Get config from .env file
     dotenv.config()
 
     // Initialize bot
-    const client = new tmi.Client({
+    client = new tmi.Client({
         options: {
             debug: true
         },
@@ -19,7 +25,7 @@ exports.run = (io) => {
         channels: process.env.CHANNELS.split(',')
     })
 
-    // Connect bot to the tchat
+    // Connect bot to the chat
     client.connect()
 
     // Callback on message
@@ -35,4 +41,11 @@ exports.run = (io) => {
             commands[cmd](client, channel, tags, message, args, io)
         }
     })
+}
+
+/**
+ * Stop chatbot.
+ */
+exports.stop = () => {
+    client.disconnect()
 }

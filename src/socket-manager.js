@@ -1,8 +1,14 @@
 // WebSocket Server
-exports.createServer = () => {
-    const http = require('http').createServer()
+const getSocketIO = require('socket.io')
 
-    const io = require('socket.io')(http, {
+let io
+
+/**
+ * Start http and io servers.
+ * @returns Socket IO object.
+ */
+exports.start = (server) => {
+    io = getSocketIO(server, {
         cors: {
             origin: "*"
         }
@@ -16,7 +22,12 @@ exports.createServer = () => {
         })
     })
 
-    http.listen(8080, () => console.log('listening on http://localhost:8080'))
-
     return io
+}
+
+/**
+ * Close http server, and disconnect all sockets.
+ */
+exports.stop = () => {
+    io.disconnectSockets()
 }
