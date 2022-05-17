@@ -83,7 +83,7 @@ function verifyMessage(hmac, verifySignature) {
 }
 
 // Get Twitch API call header
-function get_headers(token) {
+function getHeaders(token) {
     return {
         'Client-ID': process.env.CLIENT_ID,
         Authorization: 'Bearer ' + token,
@@ -91,11 +91,11 @@ function get_headers(token) {
 }
 
 // Get app token
-exports.get_token = async (client_id, client_secret, scopes) => {
+exports.getToken = async (clientId, clientSecret, scopes) => {
     let token
     await axios({
         method: 'POST',
-        url: `https://id.twitch.tv/oauth2/token?client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials&scope=${scopes}`,
+        url: `https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials&scope=${scopes}`,
     }).then(res => {
         token = res.data.access_token
     }).catch(err => {
@@ -105,10 +105,10 @@ exports.get_token = async (client_id, client_secret, scopes) => {
 }
 
 // Revoke app token
-exports.revoke_token = async (client_id, token) => {
+exports.revokeToken = async (clientId, token) => {
     await axios({
         method: 'POST',
-        url: `https://id.twitch.tv/oauth2/revoke?client_id=${client_id}&token=${token}`,
+        url: `https://id.twitch.tv/oauth2/revoke?client_id=${clientId}&token=${token}`,
     }).then(res => {
         console.log('Token revoked.')
     }).catch(err => {
@@ -117,12 +117,12 @@ exports.revoke_token = async (client_id, token) => {
 }
 
 // Get streamer id from name
-exports.get_streamer_id = async (token, name) => {
+exports.getStreamerId = async (token, name) => {
     let id
     await axios({
         method: 'GET',
         url: `https://api.twitch.tv/helix/users?login=${name}`,
-        headers: get_headers(token),
+        headers: getHeaders(token),
     }).then(res => {
         id = res.data.data[0].id
     }).catch(err => {
@@ -132,12 +132,12 @@ exports.get_streamer_id = async (token, name) => {
 }
 
 // Get subscribed events
-exports.get_subscribed_events = async (token) => {
+exports.getSubscribedEvents = async (token) => {
     let events
     await axios({
         method: 'GET',
         url: 'https://api.twitch.tv/helix/eventsub/subscriptions',
-        headers: get_headers(token),
+        headers: getHeaders(token),
     }).then(res => {
         events = res.data.data
     }).catch(err => {
@@ -151,7 +151,7 @@ exports.subscribe = async (token, id, topic) => {
     await axios({
         method: 'POST',
         url: 'https://api.twitch.tv/helix/eventsub/subscriptions',
-        headers: get_headers(token),
+        headers: getHeaders(token),
         data: {
             type: topic,
             version: '1',
@@ -172,42 +172,42 @@ exports.subscribe = async (token, id, topic) => {
 }
 
 // Unsubscribe from an event
-exports.unsubscribe = async (token, event_id) => {
+exports.unsubscribe = async (token, eventId) => {
     await axios({
         method: 'DELETE',
         url: 'https://api.twitch.tv/helix/eventsub/subscriptions',
-        headers: get_headers(token),
+        headers: getHeaders(token),
         data: {
-            id: event_id
+            id: eventId
         }
     }).then(res => {
-        console.log('Unsubscribed from ' + event_id)
+        console.log('Unsubscribed from ' + eventId)
     }).catch(err => {
         console.error(err.response.data)
     })
 }
 
 // Unsubscribe from all events
-exports.unsubscribe_all = async (token) => {
-    const events = await this.get_subscribed_events(token)
+exports.unsubscribeAll = async (token) => {
+    const events = await this.getSubscribedEvents(token)
     for (const e of events) {
         await this.unsubscribe(token, e.id)
     }
 }
 
 (async () => {
-    const appToken = await this.get_token(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'channel:read:subscriptions')
+    const appToken = await this.getToken(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'channel:read:subscriptions')
     console.log('Access token: ' + appToken)
 
-    const streamerId = await this.get_streamer_id(appToken, process.env.STREAMER)
+    const streamerId = await this.getStreamerId(appToken, process.env.STREAMER)
     console.log(`Streamer: ${process.env.STREAMER}, id: ${streamerId}`)
 
-    await this.unsubscribe_all(appToken)
+    await this.unsubscribeAll(appToken)
 
-    console.log('Events list: ' + JSON.stringify(await this.get_subscribed_events(appToken)))
+    console.log('Events list: ' + JSON.stringify(await this.getSubscribedEvents(appToken)))
 
     await this.subscribe(appToken, streamerId, 'channel.follow')
     await this.subscribe(appToken, streamerId, 'channel.subscribe')
 
-    console.log('Events list: ' + JSON.stringify(await this.get_subscribed_events(appToken)))
+    console.log('Events list: ' + JSON.stringify(await this.getSubscribedEvents(appToken)))
 })()
