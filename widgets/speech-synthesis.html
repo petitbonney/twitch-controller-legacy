@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speech Synthesis</title>
+    <style>
+      .main-page {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="main-page">
+      <h1>Speech Synthesis</h1>
+      <select name="voices" id="voices"></select>
+      <textarea name="text" id="text" cols="30" rows="10"></textarea>
+      <div>
+        <button id="speak">SPEAK</button>
+        <button id="stop">STOP</button>
+        <button id="clear">CLEAR</button>
+      </div>
+    </div>
+  </body>
+  <script>
+    const textArea = document.querySelector("#text");
+    const voiceSel = document.querySelector("#voices");
+    const speakBtn = document.querySelector("#speak");
+    const stopBtn = document.querySelector("#stop");
+    const clearBtn = document.querySelector("#clear");
+
+    const DEFAULT = "Google français";
+    let voices;
+
+    speechSynthesis.onvoiceschanged = () => {
+      voices = speechSynthesis.getVoices();
+      voices.forEach((v, i) => {
+        const s = document.createElement("option");
+        s.value = i;
+        s.innerHTML = v.name;
+        voiceSel.appendChild(s);
+        if (v.name === DEFAULT) {
+          voiceSel.value = i;
+        }
+      });
+    };
+
+    speakBtn.addEventListener("click", () => {
+      const text = textArea.value;
+      const speech = new SpeechSynthesisUtterance(text);
+      if (voiceSel.value) {
+        speech.voice = voices[voiceSel.value];
+      }
+      speechSynthesis.speak(speech);
+    });
+
+    stopBtn.addEventListener("click", () => {
+      speechSynthesis.cancel();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      textArea.value = "";
+    });
+  </script>
+</html>
